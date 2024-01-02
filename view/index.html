@@ -1,0 +1,22 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ID Card Form</title>
+<!-- Add your CSS links here -->
+</head>
+<body>
+  <form action="/submit-form" method="post" enctype="multipart/form-data">
+    <div>
+      <label for="idNumber">身份证号码（必填）:</label>
+      <input type="text" id="idNumber" name="idNumber" required>
+    </div>
+    <div>
+      <input type="file" name="idCardImage" required>
+    </div>
+    <button type="submit">生成</button>
+  </form>
+</body>
+</html>

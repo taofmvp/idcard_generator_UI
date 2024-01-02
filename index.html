@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身份证信息填写</title>
+    <style>
+    /* 样式化输入框外观 */
+    input[type="time"],
+    input[type="date"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+
+    /* 鼠标悬停效果 */
+    input[type="time"]:hover,
+    input[type="date"]:hover {
+      border-color: #999;
+    }
+
+    /* 聚焦效果 */
+    input[type="time"]:focus,
+    input[type="date"]:focus {
+      outline: none;
+      border-color: #66afe9;
+      box-shadow: 0 0 5px #66afe9;
+    }
+
+    /* 按钮样式 */
+    button {
+      padding: 8px 12px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #imagePreview {
+      width: 300px;
+      height: 300px;
+      border: 1px solid #ccc;
+      margin-left: 20px;
+      padding: 10px;
+    }
+
+    #imagePreview img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* 将输入框水平排列在同一行 */
+    .input-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      flex: 0 0 30%; /* 调整标签所占宽度 */
+    }
+
+    .input-group input {
+      flex: 0 0 65%; /* 调整输入框所占宽度 */
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Added to include padding in input width */
+        }
+        input[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="imagePreview"></div>
+    <!-- <h1>身份证信息填写</h1> -->
+    <form action="/generate" method="post" enctype="multipart/form-data">
+        <label for="idn">身份证号码:</label>
+        <input type="text" id="idn" name="idn" required><br><br>
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name"><br><br>
+        
+        <label for="validTerm">有效期限:</label>
+        <input type="text" id="validTerm" name="validTerm" required><br><br>
+          <div class="input-group">
+            <label for="startDate">开始日期:</label>
+            <input type="date" id="startDate" name="startDate">
+          </div>
+        
+          <div class="input-group">
+            <label for="endDate">结束日期:</label>
+            <input type="date" id="endDate" name="endDate">
+          </div>
+        
+        <label for="org">签发机关:</label>
+        <select id="org" name="org" required>
+            <option value="四川省成都市锦江分局">四川省成都市锦江分局</option>
+        </select><br><br>
+        <label for="avatar">头像上传:</label>
+        <input type="file" id="avatar" name="avatar" accept="image/*"><br><br>
+        <input type="submit" value="生成身份证">
+    </form>
+
+    
+  <script>
+  function generateIdCard(event) {
+      event.preventDefault(); // 阻止表单默认提交行为
+
+      const fileInput = document.getElementById('avatar');
+      const imagePreview = document.getElementById('imagePreview');
+
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          imagePreview.innerHTML = ''; // 清空预览区域
+          imagePreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+
+        // 发送 AJAX 请求到后端生成身份证
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        fetch('/generate', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.blob())
+        .then(blob => {
+          const imageUrl = URL.createObjectURL(blob);
+          const generatedImage = document.createElement('img');
+          generatedImage.src = imageUrl;
+          imagePreview.appendChild(generatedImage);
+        })
+        .catch(error => console.error('Error:', error));
+      } else {
+        imagePreview.innerHTML = '没有选择图片';
+      }
+    }
+  </script>
+</body>
+</html>
