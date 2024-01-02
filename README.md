@@ -1,8 +1,8 @@
-# idcard-generator
+# idcard-generator-UI
 
 > 使用 nodejs 生成身份证
 
-- 在线使用
+- 在线交互
 - 本地、服务器部署
 - 简化输入
 
@@ -12,7 +12,7 @@
 
 
 ## 使用
-### 直接部署
+### 直接启动（推荐node18+）
 ```javascript
 npm install express multer sharp text-to-svg
 node server.js
