@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>身份证信息填写</title>
     <style>
     /* 样式化输入框外观 */
@@ -128,7 +125,6 @@
 </head>
 <body>
 
-    <div id="imagePreview"></div>
     <!-- <h1>身份证信息填写</h1> -->
     <form action="/generate" method="post" enctype="multipart/form-data">
         <label for="idn">身份证号码:</label>
@@ -138,15 +134,6 @@
         
         <label for="validTerm">有效期限:</label>
         <input type="text" id="validTerm" name="validTerm" required><br><br>
-          <div class="input-group">
-            <label for="startDate">开始日期:</label>
-            <input type="date" id="startDate" name="startDate">
-          </div>
-        
-          <div class="input-group">
-            <label for="endDate">结束日期:</label>
-            <input type="date" id="endDate" name="endDate">
-          </div>
         
         <label for="org">签发机关:</label>
         <select id="org" name="org" required>
@@ -156,46 +143,5 @@
         <input type="file" id="avatar" name="avatar" accept="image/*"><br><br>
         <input type="submit" value="生成身份证">
     </form>
-
-    
-  <script>
-  function generateIdCard(event) {
-      event.preventDefault(); // 阻止表单默认提交行为
-
-      const fileInput = document.getElementById('avatar');
-      const imagePreview = document.getElementById('imagePreview');
-
-      const file = fileInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          imagePreview.innerHTML = ''; // 清空预览区域
-          imagePreview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-
-        // 发送 AJAX 请求到后端生成身份证
-        const formData = new FormData();
-        formData.append('avatar', file);
-
-        fetch('/generate', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.blob())
-        .then(blob => {
-          const imageUrl = URL.createObjectURL(blob);
-          const generatedImage = document.createElement('img');
-          generatedImage.src = imageUrl;
-          imagePreview.appendChild(generatedImage);
-        })
-        .catch(error => console.error('Error:', error));
-      } else {
-        imagePreview.innerHTML = '没有选择图片';
-      }
-    }
-  </script>
 </body>
 </html>
